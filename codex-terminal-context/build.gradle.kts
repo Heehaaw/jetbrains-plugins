@@ -1,4 +1,3 @@
-import org.gradle.api.logging.LogLevel
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.VerificationReportsFormats
 import java.io.File
@@ -67,10 +66,4 @@ intellijPlatform {
             }
         }
     }
-}
-
-tasks.named("verifyPlugin") {
-    // Keep verifier progress and expected upstream notices available with --info.
-    logging.captureStandardOutput(LogLevel.INFO)
-    logging.captureStandardError(LogLevel.INFO)
 }
