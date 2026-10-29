@@ -104,15 +104,24 @@ jobs:
           name: codex-terminal-context-0.0.0-dev.zip
           path: artifacts/input
           skip-decompress: true
-      - name: Promote tested plugin without rebuilding
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+      - name: Restore Gradle cache
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-read-only: true
+      - name: Promote tested plugins and generate repository
         env:
           RELEASE_TAG: ${{ steps.version.outputs.tag }}
         shell: bash
         run: |
-          python3 scripts/promote.py artifacts/input/codex-terminal-context-0.0.0-dev.zip \
-            "$RELEASE_TAG" --output-dir artifacts/release
+          ./gradlew --no-daemon --build-cache verifyRelease \
+            -PreleaseTag="$RELEASE_TAG" -PpluginRepository="$GITHUB_REPOSITORY"
           cd artifacts/release
-          sha256sum ./*.zip > SHA256SUMS
+          sha256sum ./*.zip updatePlugins.xml > SHA256SUMS
       - name: Create linked draft release
         env:
           RELEASE_TAG: ${{ steps.version.outputs.tag }}
@@ -120,7 +129,7 @@ jobs:
           SOURCE_COMMIT: ${{ steps.source.outputs.commit }}
         shell: bash
         run: |
-          draft_url=$(gh release create "$RELEASE_TAG" artifacts/release/*.zip artifacts/release/SHA256SUMS \
+          draft_url=$(gh release create "$RELEASE_TAG" artifacts/release/*.zip artifacts/release/updatePlugins.xml artifacts/release/SHA256SUMS \
             --target "$SOURCE_COMMIT" --draft --generate-notes --title "$RELEASE_TAG")
           {
             echo "## Draft release $RELEASE_TAG"
@@ -129,5 +138,7 @@ jobs:
             echo
             echo "Built from [run ${SOURCE_RUN}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${SOURCE_RUN}) at [${SOURCE_COMMIT}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${SOURCE_COMMIT})."
             echo
-            echo 'The draft contains the installable plugin ZIP and its SHA-256 checksum. Publication remains manual.'
+            echo 'The draft contains the installable plugin ZIP, JetBrains repository catalog, and SHA-256 checksums. Publication remains manual.'
+            echo
+            echo "After publishing as Latest, add [this plugin repository](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/latest/download/updatePlugins.xml) in your IDE's plugin repository settings."
           } >> "$GITHUB_STEP_SUMMARY"

@@ -4,6 +4,4 @@
 **/.intellijPlatform/
 **/.kotlin/
 **/build/
-__pycache__/
-*.pyc
 artifacts/

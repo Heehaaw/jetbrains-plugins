@@ -30,21 +30,21 @@ each new platform line should be checked with the plugin verifier.
 
 ## Development
 
-The plugin compiles against IntelliJ IDEA 2026.2 by default and requires JDK 25.
+The plugin compiles against IntelliJ IDEA 2026.2 by default and requires JDK 25. Run the following commands from the repository root using the shared Gradle wrapper.
 
 Build against a locally installed JetBrains IDE to avoid downloading another IDE distribution:
 
 ```bash
-./gradlew -PlocalIdePath="/Users/example/Applications/IntelliJ IDEA.app" test buildPlugin verifyPlugin
+./gradlew -PlocalIdePath="/Users/example/Applications/IntelliJ IDEA.app" :codex-terminal-context:test :codex-terminal-context:buildPlugin :codex-terminal-context:verifyPlugin
 ```
 
 Without `localIdePath`, the build resolves the IntelliJ Platform version pinned in `gradle.properties`. To verify one artifact against several local IDEs, pass their paths
 separated by the operating system path separator:
 
 ```bash
-./gradlew -PverificationIdePaths="/Applications/IntelliJ IDEA.app:/Applications/Rider.app" verifyPlugin
+./gradlew -PverificationIdePaths="/Applications/IntelliJ IDEA.app:/Applications/Rider.app" :codex-terminal-context:verifyPlugin
 ```
 
-The installable ZIP is written under `build/distributions/`.
+The installable ZIP is written under `codex-terminal-context/build/distributions/`.
 
 Development builds use `0.0.0-dev`. The repository's [release workflow](../doc/release-guidelines.md) promotes the tested ZIP to the selected release tag without recompiling it.

@@ -5,4 +5,6 @@ pluginManagement {
     }
 }
 
-rootProject.name = "codex-terminal-context"
+rootProject.name = "jetbrains-plugins"
+
+include("codex-terminal-context")
