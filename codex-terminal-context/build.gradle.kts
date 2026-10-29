@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.VerificationReportsFormats
 import java.io.File
 
 plugins {
@@ -48,6 +49,10 @@ intellijPlatform {
     }
 
     pluginVerification {
+        // Native Reworked Terminal APIs are experimental; keep detailed diagnostics in saved reports.
+        // The verifier still enforces compatibility failures from its report-file verdicts.
+        verificationReportsFormats.set(listOf(VerificationReportsFormats.HTML))
+
         ides {
             val localVerificationIdePaths = providers.gradleProperty("verificationIdePaths")
                 .orNull

@@ -26,16 +26,24 @@ jobs:
         with:
           distribution: temurin
           java-version: '25'
-          cache: gradle
-          cache-dependency-path: |
-            codex-terminal-context/*.gradle.kts
-            codex-terminal-context/gradle.properties
-            codex-terminal-context/gradle/wrapper/gradle-wrapper.properties
+      - name: Set up Gradle cache
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          # Only main refreshes the cache shared with pull requests.
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
       - name: Check artifact promotion
         run: python3 -m unittest discover -s tests -v
       - name: Build, test, and verify Codex Terminal Context
         working-directory: codex-terminal-context
-        run: ./gradlew --no-daemon test buildPlugin verifyPlugin
+        run: ./gradlew --no-daemon --build-cache test buildPlugin verifyPlugin
+      - name: Upload detailed plugin verification reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: plugin-verification-reports
+          path: codex-terminal-context/build/reports/pluginVerifier/
+          retention-days: 90
+          if-no-files-found: ignore
       - name: Upload installable plugin ZIP
         uses: actions/upload-artifact@v7
         with:
