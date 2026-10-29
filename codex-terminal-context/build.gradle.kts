@@ -3,7 +3,7 @@ import java.io.File
 
 plugins {
     kotlin("jvm") version "2.3.20"
-    id("org.jetbrains.intellij.platform") version "2.18.1"
+    id("org.jetbrains.intellij.platform") version "2.19.0"
 }
 
 group = "com.janmilota"
