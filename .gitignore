@@ -1,0 +1,9 @@
+.DS_Store
+.idea/
+**/.gradle/
+**/.intellijPlatform/
+**/.kotlin/
+**/build/
+__pycache__/
+*.pyc
+artifacts/

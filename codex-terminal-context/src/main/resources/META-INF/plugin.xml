@@ -1,0 +1,38 @@
+<idea-plugin>
+    <id>com.janmilota.codex-terminal-context</id>
+    <name>Codex Terminal Context</name>
+    <vendor>Jan Milota</vendor>
+
+    <description><![CDATA[
+    Inserts the current editor file or selected line range into a Codex CLI session
+    in the JetBrains IDE's native Terminal, launching one automatically when needed.
+    Adds a dedicated action to open a Codex terminal.
+  ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.plugins.terminal</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup id="CodexTerminalContext" displayType="BALLOON" isLogByDefault="true"/>
+    </extensions>
+
+    <actions>
+        <action id="CodexTerminalContext.OpenTerminal"
+                class="codexcontext.OpenCodexTerminalAction"
+                text="Open Codex Terminal"
+                description="Start a new Codex session in the native Terminal">
+            <add-to-group group-id="TerminalToolwindowActionGroup" anchor="last"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+        <action id="CodexTerminalContext.InsertReference"
+                class="codexcontext.InsertCodexReferenceAction"
+                text="Send Context to Codex Terminal"
+                description="Open or focus a native Codex terminal and insert the current file or selected line range">
+            <add-to-group group-id="MainToolbarRight" anchor="last"/>
+            <add-to-group group-id="NavBarToolBar" anchor="last"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="Floating.CodeToolbar" anchor="last"/>
+        </action>
+    </actions>
+</idea-plugin>

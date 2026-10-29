@@ -1,0 +1,58 @@
+name: Build, test, and package
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: gradle
+          cache-dependency-path: |
+            codex-terminal-context/*.gradle.kts
+            codex-terminal-context/gradle.properties
+            codex-terminal-context/gradle/wrapper/gradle-wrapper.properties
+      - name: Check artifact promotion
+        run: python3 -m unittest discover -s tests -v
+      - name: Build, test, and verify Codex Terminal Context
+        working-directory: codex-terminal-context
+        run: ./gradlew --no-daemon test buildPlugin verifyPlugin
+      - name: Upload installable plugin ZIP
+        uses: actions/upload-artifact@v7
+        with:
+          path: codex-terminal-context/build/distributions/codex-terminal-context-0.0.0-dev.zip
+          archive: false
+          retention-days: 90
+          if-no-files-found: error
+      - name: Link to manual release preparation
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          {
+            echo '## Release preparation'
+            echo
+            echo "[Prepare a draft release](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/workflows/release.yml)"
+            echo
+            echo 'Choose **Run workflow**, select the branch, then choose patch, minor, major, or custom.'
+            echo
+            echo "Tested commit: [${GITHUB_SHA}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA})"
+          } >> "$GITHUB_STEP_SUMMARY"
