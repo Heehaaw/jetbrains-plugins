@@ -33,24 +33,35 @@ jobs:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
       - name: Build, test, and verify plugins
         run: ./gradlew --no-daemon --build-cache build
+      - name: Collect tested plugin ZIPs
+        run: |
+          mkdir -p artifacts/input
+          cp */build/distributions/*.zip artifacts/input/
       - name: Verify artifact promotion and JetBrains repository
         run: >-
           ./gradlew --no-daemon --build-cache verifyRelease
           -PreleaseTag=v0.0.0
-          -PinputDirectory=codex-terminal-context/build/distributions
+          -PinputDirectory=artifacts/input
           -PoutputDirectory=artifacts/verification
       - name: Upload detailed plugin verification reports
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: plugin-verification-reports
-          path: codex-terminal-context/build/reports/pluginVerifier/
+          path: '*/build/reports/pluginVerifier/'
           retention-days: 90
           if-no-files-found: ignore
-      - name: Upload installable plugin ZIP
+      - name: Upload installable Codex plugin ZIP
         uses: actions/upload-artifact@v7
         with:
-          path: codex-terminal-context/build/distributions/codex-terminal-context-0.0.0-dev.zip
+          path: artifacts/input/codex-terminal-context-0.0.0-dev.zip
+          archive: false
+          retention-days: 90
+          if-no-files-found: error
+      - name: Upload installable Claude plugin ZIP
+        uses: actions/upload-artifact@v7
+        with:
+          path: artifacts/input/claude-terminal-context-0.0.0-dev.zip
           archive: false
           retention-days: 90
           if-no-files-found: error

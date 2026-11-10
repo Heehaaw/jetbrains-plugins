@@ -6,6 +6,8 @@ Independent JetBrains IDE plugins, maintained in one repository. Each plugin own
 | --- | --- |
 | [Codex Terminal Context](codex-terminal-context/) | Open Codex in the native Terminal and insert editor file or selected-line references without submitting them. |
 
+| [Claude Terminal Context](claude-terminal-context/) | Open Claude Code in the native Terminal and insert editor file or selected-line references without submitting them. |
+
 ## Install from the plugin repository
 
 1. Open **Settings → Plugins**, then choose **Manage Plugin Repositories** from the settings menu.
@@ -15,7 +17,7 @@ Independent JetBrains IDE plugins, maintained in one repository. Each plugin own
    https://github.com/Heehaaw/jetbrains-plugins/releases/latest/download/updatePlugins.xml
    ```
 
-3. Search for **Codex Terminal Context** in Plugins, install it, and restart the IDE if prompted.
+3. Search for **Codex Terminal Context** or **Claude Terminal Context** in Plugins, install it, and restart the IDE if prompted.
 
 The repository URL becomes available after the first release is published as Latest. Each later Latest release updates the catalog.
 
@@ -27,15 +29,15 @@ Use JDK 25 and run from the repository root:
 ./gradlew --build-cache build
 ```
 
-The plugin README describes building and verifying against locally installed Rider or IntelliJ IDEA versions. Install its ZIP from `codex-terminal-context/build/distributions/` through
+The plugin README describes building and verifying against locally installed Rider or IntelliJ IDEA versions. Install its ZIP from the plugin’s `build/distributions/` directory through
 **Settings → Plugins → Install Plugin from Disk**.
 
 ## CI and releases
 
-Main and pull-request CI run the plugin tests, compatibility verifier, and Gradle release verification, then retain the installable development ZIP for 90 days.
+Main and pull-request CI run both plugins’ tests, compatibility verifier, and Gradle release verification, then retain each installable development ZIP for 90 days.
 
 After main CI passes, open **Actions → Prepare release → Run workflow**. Select the tested branch and choose a patch, minor, major, or custom `vMAJOR.MINOR.PATCH` version.
-The workflow downloads the successful main build's exact ZIP, updates its plugin version metadata, and creates a draft release with the ZIP, JetBrains repository catalog, and
+The workflow downloads the successful main build's exact ZIPs, updates its plugin version metadata, and creates a draft release with both ZIPs, JetBrains repository catalog, and
 checksums. It preserves compiled classes and bundled dependencies. Missing or expired artifacts stop preparation. Review the linked draft in Releases and publish it manually as
 Latest. Tag pushes do not publish releases.
 

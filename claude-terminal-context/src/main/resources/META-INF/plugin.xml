@@ -1,0 +1,38 @@
+<idea-plugin>
+    <id>com.janmilota.claude-terminal-context</id>
+    <name>Claude Terminal Context</name>
+    <vendor>Jan Milota</vendor>
+
+    <description><![CDATA[
+    Inserts the current editor file or selected line range into a Claude CLI session
+    in the JetBrains IDE's native Terminal, launching one automatically when needed.
+    Adds a dedicated action to open a Claude terminal.
+  ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.plugins.terminal</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup id="ClaudeTerminalContext" displayType="BALLOON" isLogByDefault="true"/>
+    </extensions>
+
+    <actions>
+        <action id="ClaudeTerminalContext.OpenTerminal"
+                class="claudecontext.OpenClaudeTerminalAction"
+                text="Open Claude Terminal"
+                description="Start a new Claude session in the native Terminal">
+            <add-to-group group-id="TerminalToolwindowActionGroup" anchor="last"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+        <action id="ClaudeTerminalContext.InsertReference"
+                class="claudecontext.InsertClaudeReferenceAction"
+                text="Send Context to Claude Terminal"
+                description="Open or focus a native Claude terminal and insert the current file or selected line range">
+            <add-to-group group-id="MainToolbarRight" anchor="last"/>
+            <add-to-group group-id="NavBarToolBar" anchor="last"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="Floating.CodeToolbar" anchor="last"/>
+        </action>
+    </actions>
+</idea-plugin>

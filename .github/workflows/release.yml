@@ -55,11 +55,13 @@ jobs:
           # Hosted runner versions of gh do not support combining --slurp with --jq.
           gh api --paginate --slurp "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/artifacts" |
             jq '[.[].artifacts[]]' > "$RUNNER_TEMP/source-artifacts.json"
-          if ! jq -e 'any(.[]; .name == "codex-terminal-context-0.0.0-dev.zip" and .expired == false)' \
-            "$RUNNER_TEMP/source-artifacts.json" > /dev/null; then
-            echo '::error::The retained plugin ZIP is required. Select a commit whose build artifact has not expired.'
-            exit 1
-          fi
+          for plugin in codex-terminal-context claude-terminal-context; do
+            if ! jq -e --arg name "$plugin-0.0.0-dev.zip" 'any(.[]; .name == $name and .expired == false)' \
+              "$RUNNER_TEMP/source-artifacts.json" > /dev/null; then
+              echo "::error::The retained $plugin ZIP is required. Select a commit whose build artifacts have not expired."
+              exit 1
+            fi
+          done
           echo "commit=$commit" >> "$GITHUB_OUTPUT"
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
       - name: Select release version
@@ -96,12 +98,13 @@ jobs:
           fi
           echo "tag=$release_tag" >> "$GITHUB_OUTPUT"
           echo "Preparing $release_tag."
-      - name: Download tested plugin ZIP
+      - name: Download tested plugin ZIPs
         uses: actions/download-artifact@v8
         with:
           github-token: ${{ github.token }}
           run-id: ${{ steps.source.outputs.run_id }}
-          name: codex-terminal-context-0.0.0-dev.zip
+          pattern: '*-terminal-context-0.0.0-dev.zip'
+          merge-multiple: true
           path: artifacts/input
           skip-decompress: true
       - name: Set up JDK 25
@@ -138,7 +141,7 @@ jobs:
             echo
             echo "Built from [run ${SOURCE_RUN}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${SOURCE_RUN}) at [${SOURCE_COMMIT}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${SOURCE_COMMIT})."
             echo
-            echo 'The draft contains the installable plugin ZIP, JetBrains repository catalog, and SHA-256 checksums. Publication remains manual.'
+            echo 'The draft contains the installable plugin ZIPs, JetBrains repository catalog, and SHA-256 checksums. Publication remains manual.'
             echo
             echo "After publishing as Latest, add [this plugin repository](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/latest/download/updatePlugins.xml) in your IDE's plugin repository settings."
           } >> "$GITHUB_STEP_SUMMARY"
