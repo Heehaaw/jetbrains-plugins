@@ -55,7 +55,7 @@ jobs:
           # Hosted runner versions of gh do not support combining --slurp with --jq.
           gh api --paginate --slurp "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/artifacts" |
             jq '[.[].artifacts[]]' > "$RUNNER_TEMP/source-artifacts.json"
-          for plugin in codex-terminal-context claude-terminal-context; do
+          for plugin in codex-terminal-context claude-terminal-context t3-code-context; do
             if ! jq -e --arg name "$plugin-0.0.0-dev.zip" 'any(.[]; .name == $name and .expired == false)' \
               "$RUNNER_TEMP/source-artifacts.json" > /dev/null; then
               echo "::error::The retained $plugin ZIP is required. Select a commit whose build artifacts have not expired."
@@ -103,7 +103,7 @@ jobs:
         with:
           github-token: ${{ github.token }}
           run-id: ${{ steps.source.outputs.run_id }}
-          pattern: '*-terminal-context-0.0.0-dev.zip'
+          pattern: '*-context-0.0.0-dev.zip'
           merge-multiple: true
           path: artifacts/input
           skip-decompress: true

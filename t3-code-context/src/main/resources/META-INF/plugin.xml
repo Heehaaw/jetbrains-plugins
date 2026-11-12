@@ -1,0 +1,30 @@
+<idea-plugin>
+    <id>com.janmilota.t3-code-context</id>
+    <name>T3 Code Context</name>
+    <vendor>Jan Milota</vendor>
+
+    <description><![CDATA[
+    Pastes the current editor file or selected line range as a reference into the thread
+    open in the T3 Code desktop app on macOS, without sending it.
+  ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup id="T3CodeContext" displayType="BALLOON" isLogByDefault="true"/>
+    </extensions>
+
+    <actions>
+        <action id="T3CodeContext.InsertReference"
+                class="t3context.InsertT3CodeReferenceAction"
+                text="Send Context to T3 Code"
+                description="Paste the current file or selected line range into the thread open in T3 Code"
+                icon="/icons/t3code.svg">
+            <add-to-group group-id="MainToolbarRight" anchor="last"/>
+            <add-to-group group-id="NavBarToolBar" anchor="last"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="Floating.CodeToolbar" anchor="last"/>
+        </action>
+    </actions>
+</idea-plugin>

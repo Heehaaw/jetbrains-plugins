@@ -5,8 +5,8 @@ Independent JetBrains IDE plugins, maintained in one repository. Each plugin own
 | Plugin | Purpose |
 | --- | --- |
 | [Codex Terminal Context](codex-terminal-context/) | Open Codex in the native Terminal and insert editor file or selected-line references without submitting them. |
-
 | [Claude Terminal Context](claude-terminal-context/) | Open Claude Code in the native Terminal and insert editor file or selected-line references without submitting them. |
+| [T3 Code Context](t3-code-context/) | Paste editor file or selected-line references into the thread open in the T3 Code desktop app on macOS without submitting them. |
 
 ## Install from the plugin repository
 
@@ -17,7 +17,7 @@ Independent JetBrains IDE plugins, maintained in one repository. Each plugin own
    https://github.com/Heehaaw/jetbrains-plugins/releases/latest/download/updatePlugins.xml
    ```
 
-3. Search for **Codex Terminal Context** or **Claude Terminal Context** in Plugins, install it, and restart the IDE if prompted.
+3. Search for **Codex Terminal Context**, **Claude Terminal Context**, or **T3 Code Context** in Plugins, install it, and restart the IDE if prompted.
 
 The repository URL becomes available after the first release is published as Latest. Each later Latest release updates the catalog.
 
@@ -34,10 +34,10 @@ The plugin README describes building and verifying against locally installed Rid
 
 ## CI and releases
 
-Main and pull-request CI run both plugins’ tests, compatibility verifier, and Gradle release verification, then retain each installable development ZIP for 90 days.
+Main and pull-request CI run every plugin’s tests, compatibility verifier, and Gradle release verification, then retain each installable development ZIP for 90 days.
 
 After main CI passes, open **Actions → Prepare release → Run workflow**. Select the tested branch and choose a patch, minor, major, or custom `vMAJOR.MINOR.PATCH` version.
-The workflow downloads the successful main build's exact ZIPs, updates its plugin version metadata, and creates a draft release with both ZIPs, JetBrains repository catalog, and
+The workflow downloads the successful main build's exact ZIPs, updates its plugin version metadata, and creates a draft release with every plugin ZIP, JetBrains repository catalog, and
 checksums. It preserves compiled classes and bundled dependencies. Missing or expired artifacts stop preparation. Review the linked draft in Releases and publish it manually as
 Latest. Tag pushes do not publish releases.
 

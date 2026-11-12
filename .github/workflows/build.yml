@@ -65,6 +65,13 @@ jobs:
           archive: false
           retention-days: 90
           if-no-files-found: error
+      - name: Upload installable T3 Code plugin ZIP
+        uses: actions/upload-artifact@v7
+        with:
+          path: artifacts/input/t3-code-context-0.0.0-dev.zip
+          archive: false
+          retention-days: 90
+          if-no-files-found: error
       - name: Link to manual release preparation
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         shell: bash
