@@ -19,7 +19,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.awt.datatransfer.DataFlavor
 import java.awt.datatransfer.StringSelection
-import java.nio.file.Path
 
 private const val NOTIFICATION_GROUP_ID = "T3CodeContext"
 private const val NOTIFICATION_TITLE = "T3 Code Context"
@@ -36,7 +35,7 @@ class InsertT3CodeReferenceAction : AnAction() {
         val file = event.getData(CommonDataKeys.VIRTUAL_FILE)
             ?: FileDocumentManager.getInstance().getFile(editor.document)
             ?: return notify(project, "The current editor is not backed by a file.")
-        val marker = captureEditorReference(editor, file).format(projectDirectory(project))
+        val marker = captureEditorReference(editor, file).format()
 
         // T3 Code agents resolve file references from disk, so keep their view aligned with the IDE editor.
         FileDocumentManager.getInstance().saveDocument(editor.document)
@@ -72,9 +71,6 @@ class InsertT3CodeReferenceAction : AnAction() {
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
-
-private fun projectDirectory(project: Project): Path =
-    project.basePath?.let(Path::of) ?: Path.of(".").toAbsolutePath().normalize()
 
 private fun notify(project: Project, message: String) {
     NotificationGroupManager.getInstance()

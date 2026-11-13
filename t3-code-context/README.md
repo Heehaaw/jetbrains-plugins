@@ -10,8 +10,8 @@ The implementation is Kotlin-only and keeps its feature-oriented source in the f
 2. In the IDE, open a file and optionally select the relevant lines.
 3. Choose **Send Context to T3 Code** from the main toolbar, Tools menu, editor context menu, or floating selection toolbar.
 
-The plugin copies a reference such as `@src/Example.cs#L12-18 `, brings T3 Code to the front, and pastes it with ⌘V without sending it. It restores the previous clipboard
-afterwards. When pasting fails, the reference stays on the clipboard and a notification explains the cause.
+The plugin copies a reference such as `@/Users/example/project/src/Example.cs#L12-18 `, brings T3 Code to the front, and pastes it with ⌘V without sending it.
+It restores the previous clipboard afterwards. When pasting fails, the reference stays on the clipboard and a notification explains the cause.
 
 The action has no default shortcut. Assign one under **Settings → Keymap → Plugins → T3 Code Context**.
 
@@ -24,7 +24,7 @@ through `osascript` that activates T3 Code (bundle ID `com.t3tools.t3code`) and 
 - The reference lands wherever focus was in the T3 Code window. T3 Code has no command that focuses the message box first.
 - T3 Code must already be running; the plugin does not launch it.
 - Clipboard history tools record the reference.
-- References are relative to the project directory, or absolute for files outside it. T3 Code passes them to the agent as plain text.
+- References use absolute paths, so they resolve in any thread, worktree, or project. T3 Code passes them to the agent as plain text.
 - The action is hidden on Windows and Linux.
 
 ## Compatibility

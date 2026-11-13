@@ -28,8 +28,7 @@ internal fun captureEditorReference(editor: Editor, file: VirtualFile): EditorRe
     return EditorReference(Path.of(file.path), lineRange)
 }
 
-internal fun EditorReference.format(workingDirectory: Path): String =
-    formatReference(workingDirectory, file, lineRange)
+internal fun EditorReference.format(): String = formatReference(file, lineRange)
 
 internal fun selectionLineRange(
     selectionStart: Int,
@@ -45,18 +44,13 @@ internal fun selectionLineRange(
     return LineRange(startLine, endLine)
 }
 
-internal fun formatReference(workingDirectory: Path, file: Path, lineRange: LineRange?): String {
-    val normalizedWorkingDirectory = workingDirectory.toAbsolutePath().normalize()
-    val normalizedFile = file.toAbsolutePath().normalize()
-    val displayedPath = if (normalizedFile.startsWith(normalizedWorkingDirectory)) {
-        normalizedWorkingDirectory.relativize(normalizedFile)
-    } else {
-        normalizedFile
-    }
+// T3 Code threads may run in another worktree or directory than the IDE project, so references stay absolute.
+internal fun formatReference(file: Path, lineRange: LineRange?): String {
+    val absolutePath = file.toAbsolutePath().normalize()
 
     return buildString {
         append('@')
-        append(displayedPath.toString().replace('\\', '/'))
+        append(absolutePath.toString().replace('\\', '/'))
         lineRange?.let { range ->
             append("#L").append(range.start)
             if (range.end != range.start) {
